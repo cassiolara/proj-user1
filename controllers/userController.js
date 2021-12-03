@@ -139,6 +139,8 @@ class UserController {
 
         let tr = document.createElement('tr');
 
+        tr.dataset.user = JSON.stringify(dataUser);
+
         tr.innerHTML = `
         
             <td><img src="${dataUser.photo}" alt="User Image" class="img-circle img-sm"></td>
@@ -147,11 +149,19 @@ class UserController {
             <td>${(dataUser.admin) ? 'Sim' : 'Não'}</td>
             <td>${Utils.dateFormat(dataUser.register)}</td>
             <td>
-                <button type="button" class="btn btn-primary btn-xs btn-flat">Editar</button>
+                <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
                 <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
             </td>
         
         `;
+
+        tr.querySelector(".btn-edit").addEventListener("click", e=>{
+
+            console.log(JSON.parse(tr.dataset.user));
+            document.querySelector("#box-user-create").style.display = "none";
+            document.querySelector("#box-user-update").style.display = "block";
+
+        });
 
         this.tableEl.appendChild(tr); 
         
@@ -166,11 +176,16 @@ class UserController {
 
             [...this.tableEl.children].forEach(tr=>{
 
+                numberUsers++;
 
+                let user = JSON.parse(tr.dataset.user);
+
+                if (user._admin) numberAdmin++;
 
             });
 
-
+            document.querySelector("#number-users").innerHTML = numberUsers;
+            document.querySelector("#number-users-admin").innerHTML = numberAdmin;
 
     }
 
