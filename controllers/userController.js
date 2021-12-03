@@ -21,6 +21,8 @@ class UserController {
 
             let values = this.getValues();
 
+            if (!values) return false;
+
             this.getPhoto().then(
                 (content) => {
 
@@ -149,13 +151,29 @@ class UserController {
                 <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
             </td>
         
-    `;
+        `;
 
         this.tableEl.appendChild(tr); 
+        
+        this.updateCounte();
+
+        }
+
+        updateCounte(){
+
+            let numberUsers = 0;
+            let numberAdmin = 0;
+
+            [...this.tableEl.children].forEach(tr=>{
+
+
+
+            });
+
+
 
     }
 
 
 }
 
-///wp
