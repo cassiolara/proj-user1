@@ -37,14 +37,18 @@ class UserController {
 
             let result = Object.assign({}, userOld, values);
 
-            if (!values.photo) result._photo = userOld._photo;
-            
-            tr.dataset.user = JSON.stringify(values);
-
             this.showPanelCreate();
 
             this.getPhoto(this.formUpdateEl).then(
                 (content) => {
+
+                    if (!values.photo) {
+                        result._photo = userOld._photo;
+                    } else {
+                        result._photo = content;
+                    }
+
+                    tr.dataset.user = JSON.stringify(values);
 
                     tr.innerHTML = `
                 <tr>
@@ -64,18 +68,19 @@ class UserController {
 
             this.updateCount();
 
+            this.formUpdateEl.reset();
 
-                    this.formUpdateEl.reset();
+            btn.disabled = false;
 
-                    btn.disabled = false;
+            this.showPanelCreate();
 
-                }, 
-                (e) => {
-                    console.error(e)
-                }
-            );
+        }, 
+        (e) => {
+            console.error(e)
+        }
+    );
 
-        });
+});
 
     }
 
@@ -201,9 +206,17 @@ class UserController {
 
     }
     
+    insert(data){
+
+        sessionStorage.setItem("user", JSON.stringify(data));
+
+    }
+
     addLine(dataUser) {
 
         let tr = document.createElement('tr');
+
+        this.insert(dataUser);
 
         tr.dataset.user = JSON.stringify(dataUser);
 
@@ -216,7 +229,7 @@ class UserController {
                 <td>${Utils.dateFormat(dataUser.register)}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                    <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
+                    <button type="button" class="btn btn-danger btn-delete btn-xs btn-flat">Excluir</button>
                 </td>
             </tr>
         `;
@@ -230,6 +243,18 @@ class UserController {
     }
 
     addEventTr(tr){
+
+        tr.querySelector(".btn-delete").addEventListener("click", e => {
+
+            if (confirm("Deseja realmente excluir?")) {
+
+                tr.remove();
+
+                this.updateCount();
+
+            }
+
+        });
 
         tr.querySelector(".btn-edit").addEventListener("click", e => {
 
